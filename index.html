@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="da">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Solbakkegaarden — Farming Simulator 25 RP</title>
+  <style>
+    :root{--green:#2f8a3b;--accent:#f6c85f;--bg:#f7fbf6;--card:#ffffff;--muted:#6b7280}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;background:linear-gradient(180deg,#fbfff9 0%,var(--bg) 100%);color:#0f172a}
+    header{background:linear-gradient(90deg, rgba(47,138,59,0.95), rgba(70,160,78,0.92));color:white;padding:28px 20px}
+    .container{max-width:1100px;margin:0 auto;padding:18px}
+    .brand{display:flex;gap:14px;align-items:center}
+    .logo{width:64px;height:64px;background:radial-gradient(circle at 30% 30%, #fff2c9, var(--accent));border-radius:12px;display:grid;place-items:center;font-weight:700;color:#2b5b25}
+    .nav{margin-left:auto;display:flex;gap:12px}
+    .btn{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.12);padding:10px 14px;border-radius:10px;color:white;text-decoration:none;font-weight:600}
+    .hero{display:grid;grid-template-columns:1fr;gap:18px;align-items:center;padding:32px 0}
+    .hero h1{font-size:28px;margin:0 0 8px}
+    .hero p{margin:0;color:var(--card)}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:18px}
+    .card{background:var(--card);padding:16px;border-radius:12px;box-shadow:0 6px 18px rgba(11,20,8,0.06)}
+    .muted{color:var(--muted);font-size:14px}
+    .rules li{margin:8px 0}
+    .cta{display:flex;gap:12px;margin-top:12px}
+    footer{padding:24px 0;margin-top:36px;color:var(--muted);font-size:14px}
+    @media (max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}.hero h1{font-size:24px}}
+    @media (max-width:640px){.nav{display:none}.grid{grid-template-columns:1fr}.brand{gap:10px}.logo{width:52px;height:52px}}
+    .gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+    .gallery img{width:100%;height:120px;object-fit:cover;border-radius:8px}
+    input,textarea,select{width:100%;padding:10px;border-radius:8px;border:1px solid #e6e9ec;font-size:14px}
+    label{display:block;font-weight:600;margin:8px 0 6px}
+    .badge{display:inline-block;padding:6px 10px;border-radius:999px;background:#eef9ef;color:var(--green);font-weight:700}
+    .footer-links{display:flex;gap:12px;flex-wrap:wrap}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container" style="display:flex;align-items:center">
+      <div class="brand">
+        <div class="logo">SBG</div>
+        <div>
+          <div style="font-weight:800;font-size:18px">Solbakkegaarden</div>
+          <div style="font-size:13px;color:rgba(255,255,255,0.9)">Farming Simulator 25 — RP Community</div>
+        </div>
+      </div>
+      <nav class="nav">
+        <a class="btn" href="#about">Om</a>
+        <a class="btn" href="#rules">Regler</a>
+        <a class="btn" href="#events">Events</a>
+        <a class="btn" id="discordBtn" href="#join">Join Discord</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <h1>Velkommen til Solbakkegaarden — dit danske RP-landbrug</h1>
+        <p class="muted">Spil Farming Simulator 25 i et realistisk roleplay-miljø. Bliv landmand, maskinmand, handelsmand eller byens hjælper — vi har plads til alle.</p>
+        <div class="cta">
+          <a class="btn" href="#join" style="background:var(--green);color:white;border:none" id="joinBig">Join vores Discord</a>
+          <a class="btn" href="#rules">Læs reglerne</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" style="margin-top:18px">
+      <h2>Om serveren</h2>
+      <div class="card" style="margin-top:10px">
+        <p class="muted">Solbakkegaarden er en dansk Farming Simulator 25 RP-server, hvor spillere samarbejder, driver gårde og deltager i events. Vi prioriterer god stemning, realisme og hjælpsomhed.</p>
+      </div>
+    </section>
+
+    <section id="rules" style="margin-top:18px">
+      <h2>Regelsæt</h2>
+      <div class="card" style="margin-top:10px">
+        <ol class="rules muted">
+          <li><strong>Respekt:</strong> Ingen mobning, diskrimination eller chikane.</li>
+          <li><strong>RP først:</strong> Hold dig i din rolle og undgå metagaming.</li>
+          <li><strong>Maskiner:</strong> Ingen ødelæggelse af andres udstyr uden aftale.</li>
+          <li><strong>Økonomi:</strong> Ingen snyd, exploits eller urimelig handel.</li>
+          <li><strong>Mods:</strong> Brug kun godkendte mods.</li>
+          <li><strong>Voice/chat:</strong> Vær ordentlig i tone.</li>
+          <li><strong>Admin-instrukser:</strong> Følg staff — de har sidste ord.</li>
+          <li><strong>Hygge:</strong> Hjælp nye spillere og deltag i community events.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="events" style="margin-top:18px">
+      <h2>Events & Aktiviteter</h2>
+      <div class="grid" style="margin-top:10px">
+        <div class="card">
+          <h3>Markauktion</h3>
+          <p class="muted">Tredje søndag i måneden — køb og sælg marker i RP.</p>
+        </div>
+        <div class="card">
+          <h3>Skovhugstdag</h3>
+          <p class="muted">Sæsonbestemt event med træfældning og tømmer.</p>
+        </div>
+        <div class="card">
+          <h3>Maskinworkshop</h3>
+          <p class="muted">Lær at vedligeholde og tune dine maskiner.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="gallery" style="margin-top:18px">
+      <h2>Galleri</h2>
+      <div class="gallery" style="margin-top:10px">
+        <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee" alt="Mark">
+        <img src="https://images.unsplash.com/photo-1518998053901-5348d3961a04" alt="Traktor">
+        <img src="https://images.unsplash.com/photo-1609784278073-54a6b26dfecb" alt="Silo">
+        <img src="https://images.unsplash.com/photo-1591181527987-7aa90bf7e66c" alt="Høst">
+        <img src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6" alt="Hest">
+        <img src="https://images.unsplash.com/photo-1589984662646-e7b2e86e1a2d" alt="Gård">
+      </div>
+    </section>
+
+    <section id="join" style="margin-top:18px">
+      <h2>Hvordan joiner du?</h2>
+      <div class="card" style="margin-top:10px">
+        <ol class="muted">
+          <li>Opret en Discord-konto.</li>
+          <li>Klik på knappen herunder.</li>
+          <li>Læs reglerne i #📜・regler på Discord.</li>
+          <li>Installer mods (links i Discord).</li>
+        </ol>
+        <div style="margin-top:12px">
+          <a id="discordInvite" class="btn" href="https://discord.gg/GW6pwDr2GH" target="_blank" style="background:var(--green);color:white;border:none">Join Solbakkegaarden (Discord)</a>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <div>
+          <strong>Solbakkegaarden</strong>
+          <div class="muted">© Solbakkegaarden — FS25 RP community</div>
+        </div>
+        <div class="footer-links">
+          <a class="muted" href="#rules">Regler</a>
+          <a class="muted" href="#join">Discord</a>
+        </div>
+      </div>
+    </footer>
+  </main>
+</body>
+</html>
