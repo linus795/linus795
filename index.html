@@ -1,129 +1,335 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Top Secret Access</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>THE CRAZY SECRET VAULT — puzzle challenge</title>
 <style>
-  body {
-    background: radial-gradient(circle at center, #0a0a0f, #000);
-    color: #0ff;
-    font-family: Consolas, monospace;
-    text-align: center;
-    padding: 60px 20px;
+  /* Basic theme */
+  :root{
+    --bg:#06070a; --panel:#071028; --accent:#00ffd5; --accent2:#ff3bd6; --muted:#9fb3c8;
+    --mono: "Courier New", Courier, monospace;
   }
-  h1 { color: #0ff; font-size: 2em; }
-  input {
-    background: transparent; border: 1px solid #0ff; color: #0ff;
-    padding: 8px; width: 320px; border-radius: 8px; text-align: center;
+  *{box-sizing:border-box}
+  body{margin:0; min-height:100vh; background:
+    radial-gradient(800px 400px at 10% 10%, rgba(0,255,213,0.03), transparent 6%),
+    radial-gradient(700px 300px at 90% 90%, rgba(255,59,214,0.02), transparent 8%),
+    var(--bg); color:var(--accent); font-family:var(--mono); -webkit-font-smoothing:antialiased}
+  .wrap{max-width:1100px;margin:28px auto;padding:20px}
+  header{display:flex;justify-content:space-between;align-items:center;gap:10px}
+  h1{margin:0;font-size:20px;color:var(--accent2); letter-spacing:1px}
+  .sub{color:var(--muted); font-size:13px}
+  .row{display:flex; gap:20px; margin-top:18px}
+  .panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+         border:1px solid rgba(255,255,255,0.03); padding:16px; border-radius:10px; flex:1}
+  .left{width:360px; flex:0 0 360px}
+  .terminal{
+    background:linear-gradient(180deg, #001017, #00121a);
+    padding:14px; border-radius:8px; min-height:220px; color:#bff;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+    font-size:13px; line-height:1.35;
   }
-  button {
-    margin-top: 10px; background: #0ff; color: #000;
-    border: none; padding: 8px 20px; border-radius: 8px;
-    cursor: pointer; font-weight: bold;
+
+  input[type="password"]{width:100%; padding:10px;border-radius:8px;background:transparent;border:1px dashed rgba(0,255,213,0.1); color:var(--accent); font-family:var(--mono)}
+  button{padding:8px 10px;border-radius:8px;border:none;cursor:pointer;background:var(--accent); color:#002; font-weight:700}
+
+  .hint{font-size:12px;color:var(--muted); margin-top:8px}
+  .msgs{margin-top:12px; font-size:13px}
+  .secret-area{display:none; margin-top:12px; padding:12px; background:rgba(0,0,0,0.25); border-radius:8px; color:#dff}
+  .glitch{display:inline-block; position:relative}
+  .glitch::after, .glitch::before{content:attr(data-text); position:absolute; left:0; top:0; width:100%}
+  .glitch::before{color:var(--accent); transform:translate(-2px,-1px); opacity:0.9}
+  .glitch::after{color:var(--accent2); transform:translate(2px,1px); opacity:0.8}
+
+  /* fancy list for puzzles */
+  ul.puzzles{padding-left:18px; margin:8px 0}
+  li.puzzles-item{margin:8px 0; color:var(--muted)}
+
+  /* small footer */
+  footer{color:var(--muted); font-size:12px; margin-top:18px; text-align:center}
+
+  /* fun animation */
+  @keyframes blink {
+    0%{opacity:1}50%{opacity:0.2}100%{opacity:1}
   }
-  #secret {
-    margin-top: 40px; text-align: left; display: none;
-    border: 1px solid #044; padding: 20px; border-radius: 10px;
-    background: rgba(0, 30, 30, 0.3);
-  }
-  .msg { margin-bottom: 6px; }
-  .category { color: #0f0; }
+  .cursor{display:inline-block;background:var(--accent); width:8px; height:14px;margin-left:6px;vertical-align:middle; animation:blink 1s step-end infinite}
+
+  /* reveal-on-hover secret style */
+  .hover-reveal{color:transparent; text-shadow:0 0 8px rgba(0,255,213,0.05); cursor:help}
+  .hover-reveal:hover{color:var(--accent); text-shadow:none}
+
+  /* code block */
+  pre.code{background:rgba(0,0,0,0.35); padding:10px;border-radius:6px;overflow:auto;color:#cfe}
 </style>
 </head>
 <body>
-  <h1>Enter Access Password</h1>
-  <p>Only those who know the code may reveal the messages.</p>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1 class="glitch" data-text="THE CRAZY SECRET VAULT">THE CRAZY SECRET VAULT</h1>
+        <div class="sub">A harmless puzzle/CTF-style page — for educational & entertainment purposes only</div>
+      </div>
 
-  <input type="password" id="pw" placeholder="Enter password...">
-  <br>
-  <button onclick="unlock()">Unlock Secrets</button>
+      <div style="text-align:right">
+        <div class="sub">Post it, share, watch people solve puzzles...</div>
+        <div class="sub" style="margin-top:6px">⚠️ <strong style="color:#f66">DO NOT attempt to attack real systems</strong></div>
+      </div>
+    </header>
 
-  <div id="result"></div>
+    <div class="row">
+      <aside class="panel left">
+        <div style="font-size:13px; margin-bottom:8px">Access portal (faux)</div>
+        <div class="terminal" id="terminal">
+          <div id="term-lines">
+            <div>> Welcome to the Vault.</div>
+            <div>> Enter passphrase to reveal server messages.</div>
+            <div style="margin-top:8px; color:var(--muted); font-size:12px">Tip: There are MANY hidden clues in the page source, comments and encoded strings.</div>
+          </div>
+          <div style="margin-top:12px">
+            <input id="pw" type="password" placeholder="Type passphrase...">
+            <div style="display:flex; gap:8px; margin-top:8px">
+              <button onclick="attemptUnlock()">Unlock</button>
+              <button onclick="showClues()">Show public clues</button>
+            </div>
+            <div class="hint">Hint: this page is client-side only — secrets are intentionally obfuscated here.</div>
+          </div>
+        </div>
 
-  <div id="secret">
-    <h2>💀 Secret Server Messages 💀</h2>
-    <div id="messages"></div>
+        <div class="msgs">
+          <div><strong>Public puzzles (easy → hard):</strong></div>
+          <ul class="puzzles">
+            <li class="puzzles-item">1) Base64 string hidden in page comment</li>
+            <li class="puzzles-item">2) Rot13 encoded note in &lt;style&gt; (search for "rot13")</li>
+            <li class="puzzles-item">3) Hex string shown in the footer</li>
+            <li class="puzzles-item">4) Faux login checks SHA-256 of passphrase (client-side)</li>
+            <li class="puzzles-item">5) Hidden "hover-reveal" words — try to hover things</li>
+            <li class="puzzles-item">6) Ultimate: solve mini-js puzzle printed in console</li>
+          </ul>
+        </div>
+      </aside>
+
+      <section class="panel">
+        <div style="display:flex; justify-content:space-between; align-items:center">
+          <div><strong style="font-size:15px">Secret Server Messages (only visible after correct passphrase)</strong></div>
+          <div class="sub">Collect flags, post results — be kind & legal</div>
+        </div>
+
+        <div id="secretArea" class="secret-area" aria-live="polite">
+          <!-- filled dynamically -->
+        </div>
+
+        <div id="publicClues" style="margin-top:12px; display:none;">
+          <h3 style="margin:6px 0">Public Clues</h3>
+          <p class="sub">These are intentionally weak clues to encourage exploration.</p>
+          <pre class="code" id="clueText">// clue: Look at page comments, CSS and the console.
+// base64_hint: QklHUDpSb3RzIGFyZSBmdW4hCiBFeGFtcGxlOiBodHRwczovL2V4YW1wbGUuY29t
+// rot13_hint: EBG13 vf fnlvat 'ebg13' - gnxr vg, ernq va snpg (search for the string "rot13" in CSS)
+// hex_footer: 48656c6c6f2c2073656372657421
+// console_task: open the console and run: challenge.getHint()
+</pre>
+        </div>
+
+        <div style="margin-top:14px">
+          <h4 style="margin:6px 0">Rules & Notes</h4>
+          <ul style="color:var(--muted); font-size:13px">
+            <li>✅ This is just a puzzle page — there are no real servers to hack.</li>
+            <li>✅ Allowed: inspect source, decode strings, solve puzzles and post hints/results.</li>
+            <li>❌ Not allowed: using this to practise attacking third-party services or exposing others' data.</li>
+          </ul>
+        </div>
+
+        <footer id="pageFooter">
+          <div style="margin-top:14px">Footer hex (hidden message): <span id="hexFooter">48656c6c6f2c2073656372657421</span></div>
+        </footer>
+      </section>
+    </div>
+
+    <div style="margin-top:18px" class="panel">
+      <h3 style="margin:6px 0">Extra fun: mini code puzzle</h3>
+      <p class="sub">Open your browser console — a `challenge` object is available. Use it to get progressive hints.</p>
+      <pre class="code">
+// In console: type "challenge.getHint()" to get hints.
+// There's also a function to check a candidate flag: challenge.check(flag)
+// Flags are simple tokens like FLAG{something-readable}
+</pre>
+    </div>
   </div>
 
 <script>
-  // Your ultra-long password (kept only in JS here)
-  const PASSWORD = "08345q3462346yasgadf76h0";
+/*
+  SAFE PUZZLE FILE
+  - This single-file HTML is intentionally safe: all "secret messages" are client-side obfuscated strings.
+  - For posting: do not encourage real attacks; include disclaimers.
+*/
 
-  // Example "server messages" content
-  const SERVER_MESSAGES = {
-    info: [
-      "Server uptime: everything nominal.",
-      "New feature deployed: secret vault UI updated.",
-      "Info: scheduled maintenance on 2025-11-01."
-    ],
-    warnings: [
-      "Warning: too many login attempts from a single IP.",
-      "Warning: deprecated API version in use."
-    ],
-    errors: [
-      "Error: transaction failed to commit.",
-      "Error: unable to reach upstream service."
-    ],
-    alerts: [
-      "ALERT: Unusual activity detected in account #42.",
-      "SECURITY ALERT: IP block activated for suspicious traffic."
-    ],
-    tips: [
-      "Tip: Use a password manager to store long passwords safely.",
-      "Tip: Rotate your secrets regularly."
-    ],
-    fun: [
-      "Fun fact: Honey never spoils.",
-      "Joke: Why do programmers prefer dark mode? Because light attracts bugs."
-    ],
-    quotes: [
-      "Quote: 'The secret of getting ahead is getting started.' — Mark Twain",
-      "Quote: 'Simplicity is the soul of efficiency.' — Austin Freeman"
-    ],
-    personal: [
-      "Hello, Friend — welcome back!",
-      "Psst: this is a demo message tailored for the curious."
-    ],
-    system_logs: [
-      "Log[2025-10-05T12:05:03Z]: auth.check -> OK",
-      "Log[2025-10-05T12:06:11Z]: vault.read -> OK"
-    ],
-    secrets: [
-      "Secret #1: Life is short — eat dessert first.",
-      "Secret #2: This site is only a demo; do not store real secrets here.",
-      "Secret #3: Edit this HTML file to change hidden data."
-    ]
-  };
+// ------------ data (encoded / obfuscated) --------------
+const OBFUSCATED = {
+  // base64 (in comment clue too)
+  base64_1: "QklHUDpSb3RzIGFyZSBmdW4hIEZsYWc6IEZMQUd7YmFzZTY0X2ZpbmR9",
+  // rot13 string (we will include rot13 hint in CSS comment)
+  rot13_1: "Guvf vf n erpbeq bs rdhnyvpngvba: Synzrag{ebg13_vgrz}",
+  // hex in footer already: 48656c6c6f2c2073656372657421  -> "Hello, secret!"
+  // simple Caesar shift example (shift 2)
+  caesar_1: "Jgnnq yqtnf{ecv{uqkicp}}", // "Hello world{cat{someone}}" (shift -2 to decode)
+  // flag-like string mixed with reversed segments:
+  reverse_1: "}dnah_revo{GALF", // reversed FLAG{overhand}
+  // small "password" for unlocking: (we will SHA-256 check)
+  unlock_hash: "cc347964917182bf4495f6cb47f118508fd9b2b1cd99ead753054dae5e84dde8"
+};
 
-  function unlock() {
-    const input = document.getElementById("pw").value.trim();
-    const result = document.getElementById("result");
-    const secret = document.getElementById("secret");
-    const messages = document.getElementById("messages");
+// ---------- helper utils ----------
+async function sha256Hex(str){
+  const enc = new TextEncoder();
+  const data = enc.encode(str);
+  const digest = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(digest)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+function b64decode(s){ try { return atob(s); } catch(e){ return null; } }
+function rot13(s){ return s.replace(/[A-Za-z]/g, c => String.fromCharCode( (c<='Z'?65:97) + ( (c.charCodeAt(0) - (c<='Z'?65:97) + 13) %26 ) )); }
+function hexToStr(hex){ try { let out=''; for(let i=0;i<hex.length;i+=2) out+=String.fromCharCode(parseInt(hex.substr(i,2),16)); return out;}catch(e){return null;} }
+function caesarShift(s,shift){ return s.split('').map(ch=>{ const code = ch.charCodeAt(0); if(code>=65 && code<=90) return String.fromCharCode((code-65+shift+26)%26+65); if(code>=97 && code<=122) return String.fromCharCode((code-97+shift+26)%26+97); return ch; }).join(''); }
+function reverseStr(s){ return s.split('').reverse().join(''); }
 
-    if (input === PASSWORD) {
-      result.innerHTML = "<span style='color:#0f0'>Access Granted ✅</span>";
-      secret.style.display = "block";
-      messages.innerHTML = "";
+// -------------- UI logic ---------------
+const secretArea = document.getElementById('secretArea');
+const terminal = document.getElementById('term-lines');
+const pwInput = document.getElementById('pw');
 
-      for (const [cat, arr] of Object.entries(SERVER_MESSAGES)) {
-        const header = document.createElement("h3");
-        header.className = "category";
-        header.textContent = cat.toUpperCase();
-        messages.appendChild(header);
-        arr.forEach(msg => {
-          const p = document.createElement("div");
-          p.className = "msg";
-          p.textContent = msg;
-          messages.appendChild(p);
-        });
-      }
+async function attemptUnlock(){
+  const candidate = pwInput.value.trim();
+  if(!candidate){ flashTerminal("No passphrase entered."); return; }
+  flashTerminal("> checking passphrase...");
+  try{
+    const h = await sha256Hex(candidate);
+    if(h === OBFUSCATED.unlock_hash){
+      revealAll();
     } else {
-      result.innerHTML = "<span style='color:#f00'>Access Denied ❌</span>";
-      secret.style.display = "none";
+      flashTerminal("> access denied — incorrect passphrase.");
+      blinkInput();
     }
+  }catch(e){
+    flashTerminal("> error computing hash.");
   }
+}
+
+function flashTerminal(text){
+  const d = document.createElement('div');
+  d.textContent = text;
+  terminal.appendChild(d);
+  terminal.scrollTop = terminal.scrollHeight;
+}
+
+function blinkInput(){
+  pwInput.style.transition = 'transform 60ms';
+  pwInput.style.transform = 'translateX(-8px)';
+  setTimeout(()=> pwInput.style.transform = 'translateX(8px)',80);
+  setTimeout(()=> { pwInput.style.transform=''; pwInput.style.transition=''; },300);
+}
+
+function revealAll(){
+  flashTerminal("> passphrase accepted. Revealing messages...");
+  // decode many puzzles and show them
+  const lines = [];
+
+  // base64
+  const b64 = b64decode(OBFUSCATED.base64_1) || "(bad b64)";
+  lines.push({title:"BASE64_DECODE", items:[b64]});
+
+  // rot13
+  const rot = rot13(OBFUSCATED.rot13_1);
+  lines.push({title:"ROT13", items:[rot]});
+
+  // hex footer
+  const hex = hexToStr(document.getElementById('hexFooter').textContent.trim());
+  lines.push({title:"HEX_FOOTER", items:[hex]});
+
+  // caesar (shift -2 to decode)
+  const caes = caesarShift(OBFUSCATED.caesar_1, -2);
+  lines.push({title:"CAESAR(-2)", items:[caes]});
+
+  // reverse
+  const rev = reverseStr(OBFUSCATED.reverse_1);
+  lines.push({title:"REVERSED", items:[rev]});
+
+  // small "server messages" array (faux)
+  const messages = [
+    "INFO: Server emulation start: OK",
+    "ALERT: This vault is a puzzle — no real systems are harmed",
+    "TIPS: Try the page comments, CSS and the console for hidden flags"
+  ];
+  lines.push({title:"SERVER_MESSAGES", items:messages});
+
+  // assemble UI
+  secretArea.innerHTML = "";
+  lines.forEach(group=>{
+    const h = document.createElement('h4');
+    h.textContent = group.title;
+    secretArea.appendChild(h);
+    group.items.forEach(it=>{
+      const p = document.createElement('div');
+      p.style.marginBottom='8px';
+      p.textContent = it;
+      secretArea.appendChild(p);
+    });
+  });
+
+  // a playful "flag" that can be captured (obvious)
+  const flag = "FLAG{client_side_puzzles_are_fun}";
+  const flagBox = document.createElement('div');
+  flagBox.style.marginTop='12px';
+  flagBox.style.padding='10px';
+  flagBox.style.background='rgba(255,255,255,0.03)';
+  flagBox.style.borderRadius='6px';
+  flagBox.innerHTML = "<strong>FLAG</strong>: <code>"+flag+"</code><div style='color:var(--muted); font-size:12px; margin-top:6px;'>If you found this, congrats — post your writeup on Reddit!</div>";
+  secretArea.appendChild(flagBox);
+
+  secretArea.style.display = 'block';
+  document.getElementById('pw').value = '';
+}
+
+// show some public clues panel
+function showClues(){
+  const pc = document.getElementById('publicClues');
+  pc.style.display = (pc.style.display === 'none' ? 'block' : 'none');
+}
+
+// ---------- console challenge object ----------
+window.challenge = (function(){
+  let hints = [
+    "First hint: base64 is in a comment and also in the public clues block.",
+    "Second hint: check rot13 string inside the page source.",
+    "Third hint: open the console and inspect the OBFUSCATED object."
+  ];
+  return {
+    getHint: function(i){
+      if(typeof i === 'number' && hints[i]) return hints[i];
+      return hints.shift() || "No more hints.";
+    },
+    check: async function(candidate){
+      // candidate should be exactly the flag string to pass
+      const correct = "FLAG{client_side_puzzles_are_fun}";
+      return candidate === correct;
+    },
+    revealPartial: function(){
+      console.log("JS debug: OBFUSCATED keys:", Object.keys(OBFUSCATED));
+      console.log("Try: OBFUSCATED.base64_1 (then atob or use challenge.getHint())");
+    }
+  };
+})();
+
+// tiny UX: console note
+console.log("%cThis is a puzzle page. Use challenge.getHint() and challenge.revealPartial() in the console.", "color: #0ff; font-weight:700");
+
 </script>
+
+<!--
+  EXTRA HIDDEN COMMENT CLUE (base64 again) - purposely duplicated:
+  QklHUDpSb3RzIGFyZSBmdW4hIEZsYWc6IEZMQWd7YmFzZTY0X2ZpbmR9
+-->
+
+<!--
+  rot13 note hidden in comment (encoded): 
+  Gjb evqqyr vf sbe svefg ercynprf - gura ersre gb svyr.
+-->
 </body>
 </html>
